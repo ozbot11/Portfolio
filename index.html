@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 30%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header */
+        header {
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        /* Project Grid */
+        .projects {
+            padding: 4rem 0;
+            display: grid;
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border-color: var(--accent);
+        }
+
+        .project-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .project-date {
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .project-arrow {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            color: var(--accent);
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover .project-arrow {
+            transform: translateX(5px);
+        }
+
+        /* Project Page Styles */
+        .project-page {
+            display: none;
+            padding: 2rem 0;
+            min-height: 100vh;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-button:hover {
+            color: var(--accent-hover);
+        }
+
+        .project-header {
+            margin-bottom: 3rem;
+        }
+
+        .project-header h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .project-content {
+            display: grid;
+            gap: 3rem;
+        }
+
+        .section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .code-preview {
+            background: #0d0d0d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #e0e0e0;
+            margin-top: 1rem;
+        }
+
+        .links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .link-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--gradient);
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .link-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .resource-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .resource-list li {
+            padding: 0.5rem 0;
+        }
+
+        .resource-list a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .resource-list a:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .project-card {
+                padding: 1.5rem;
+            }
+            
+            .section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Portfolio Page -->
+    <div id="main-page" class="container">
+        <header>
+            <h1>My Portfolio</h1>
+            <p class="subtitle">A collection of my technical projects and innovations</p>
+        </header>
+
+        <div class="projects">
+            <!-- DubMaps - April 2025 -->
+            <a href="#dubmaps" class="project-card" onclick="showProject('dubmaps'); return false;">
+                <div class="project-date">April 2025</div>
+                <h2 class="project-title">DubMaps</h2>
+                <p class="project-description">Inspired by Stanford's TreeMap app, making a UW map that helps students with navigating around campus, both for getting to general buildings, but also for specific rooms and other resources (makerspaces, piano rooms, etc.).</p>
+                <span class="project-arrow">→</span>
+            </a>
+
+            <!-- utzGPT - April 2025 -->
+            <a href="#utzgpt" class="project-card" onclick="showProject('utzgpt'); return false;">
+                <div class="project-date">April 2025</div>
+                <h2 class="project-title">utzGPT</h2>
+                <p class="project-description">Writing a custom GPT, learning techniques like parsing with tiktoken.</p>
+                <span class="project-arrow">→</span>
+            </a>
+
+            <!-- WXML - March 2025 -->
+            <a href="#wxml" class="project-card" onclick="showProject('wxml'); return false;">
+                <div class="project-date">March 2025</div>
+                <h2 class="project-title">WXML</h2>
+                <p class="project-description">Creating resources (3D Models, 3D Prints, 3D Animations, and a website) to help students of Math 125 and Math 126 learn and gain a deeper visual and kinesthetic understanding of core concepts.</p>
+                <span class="project-arrow">→</span>
+            </a>
+
+            <!-- Husky Satellite Labs - December 2024 -->
+            <a href="#husky-sat" class="project-card" onclick="showProject('husky-sat'); return false;">
+                <div class="project-date">December 2024</div>
+                <h2 class="project-title">Husky Satellite Labs Earth Tracker FOUND</h2>
+                <p class="project-description">Writing the Serializer/Deserializer code from scratch for the Husky SAT FOUND subsystem.</p>
+                <span class="project-arrow">→</span>
+            </a>
+
+            <!-- ClubAI/BuzzeAI - October 2024 -->
+            <a href="#clubai" class="project-card" onclick="showProject('clubai'); return false;">
+                <div class="project-date">October 2024</div>
+                <h2 class="project-title">ClubAI/BuzzeAI</h2>
+                <p class="project-description">An AI designed for custom poster generation to help small businesses and clubs at schools to advertise.</p>
+                <span class="project-arrow">→</span>
+            </a>
+
+            <!-- Eye Disease Detection - November 2023 -->
+            <a href="#eye-disease" class="project-card" onclick="showProject('eye-disease'); return false;">
+                <div class="project-date">November 2023</div>
+                <h2 class="project-title">Eye Disease Detection</h2>
+                <p class="project-description">A custom CNN for with Ankara City Hospital (where I learned how to read and understand eye scans from doctors) and could detect CNV, Drusen CNE, and Healthy eyes.</p>
+                <span class="project-arrow">→</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Project Pages -->
+    <!-- DubMaps -->
+    <div id="dubmaps-page" class="project-page container">
+        <a href="#" class="back-button" onclick="showMain(); return false;">← Back to Portfolio</a>
+        
+        <div class="project-header">
+            <h2>DubMaps</h2>
+            <p class="project-date">April 2025</p>
+        </div>
+
+        <div class="project-content">
+            <div class="section">
+                <h3>About</h3>
+                <p>DubMaps is a comprehensive navigation application designed specifically for the University of Washington campus. Inspired by Stanford's TreeMap app, this project aims to help students navigate not just between buildings, but to specific rooms and campus resources like makerspaces and piano rooms.</p>
+            </div>
+
+            <div class="section">
+                <h3>Code Preview</h3>
+                <div class="code-preview">
+// Sample routing algorithm for indoor navigation
+const findOptimalPath = (start, destination) => {
+    const graph = buildCampusGraph();
+    const visited = new Set();
+    const distances = {};
+    const previous = {};
+    
+    // Initialize distances
+    for (let node in graph) {
+        distances[node] = Infinity;
+    }
+    distances[start] = 0;
+    
+    // Dijkstra's algorithm implementation
+    // ... routing logic here
+    
+    return reconstructPath(previous, destination);
+};
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Links</h3>
+                <div class="links">
+                    <a href="#" class="link-button">
+                        <span>GitHub Repository</span>
+                    </a>
+                    <a href="#" class="link-button">
+                        <span>Live Demo</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Resources</h3>
+                <ul class="resource-list">
+                    <li><a href="#">Indoor Navigation Systems - Research Paper</a></li>
+                    <li><a href="#">Stanford TreeMap Documentation</a></li>
+                    <li><a href="#">Graph Algorithms for Path Finding - YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- utzGPT -->
+    <div id="utzgpt-page" class="project-page container">
+        <a href="#" class="back-button" onclick="showMain(); return false;">← Back to Portfolio</a>
+        
+        <div class="project-header">
+            <h2>utzGPT</h2>
+            <p class="project-date">April 2025</p>
+        </div>
+
+        <div class="project-content">
+            <div class="section">
+                <h3>About</h3>
+                <p>A custom GPT implementation exploring advanced techniques in natural language processing, including token parsing with tiktoken and custom model architectures.</p>
+            </div>
+
+            <div class="section">
+                <h3>Code Preview</h3>
+                <div class="code-preview">
+import tiktoken
+
+# Initialize tokenizer
+enc = tiktoken.get_encoding("cl100k_base")
+
+def tokenize_text(text):
+    """Tokenize input text using tiktoken"""
+    tokens = enc.encode(text)
+    return tokens
+
+def decode_tokens(tokens):
+    """Decode tokens back to text"""
+    return enc.decode(tokens)
+
+# Custom attention mechanism
+class MultiHeadAttention(nn.Module):
+    def __init__(self, d_model, n_heads):
+        super().__init__()
+        self.d_model = d_model
+        self.n_heads = n_heads
+        # ... implementation details
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Links</h3>
+                <div class="links">
+                    <a href="#" class="link-button">
+                        <span>GitHub Repository</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Resources</h3>
+                <ul class="resource-list">
+                    <li><a href="#">Attention Is All You Need - Original Paper</a></li>
+                    <li><a href="#">Tiktoken Documentation</a></li>
+                    <li><a href="#">Building GPT from Scratch - Andrej Karpathy</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- WXML -->
+    <div id="wxml-page" class="project-page container">
+        <a href="#" class="back-button" onclick="showMain(); return false;">← Back to Portfolio</a>
+        
+        <div class="project-header">
+            <h2>WXML</h2>
+            <p class="project-date">March 2025</p>
+        </div>
+
+        <div class="project-content">
+            <div class="section">
+                <h3>About</h3>
+                <p>Creating comprehensive educational resources including 3D models, 3D prints, animations, and an interactive website to help Math 125 and Math 126 students gain deeper visual and kinesthetic understanding of core mathematical concepts.</p>
+            </div>
+
+            <div class="section">
+                <h3>Code Preview</h3>
+                <div class="code-preview">
+// Three.js 3D visualization for calculus concepts
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+// Create parametric surface for multivariable calculus
+function createParametricSurface(func, uMin, uMax, vMin, vMax) {
+    const geometry = new THREE.ParametricGeometry(
+        (u, v, target) => {
+            const x = (uMax - uMin) * u + uMin;
+            const y = (vMax - vMin) * v + vMin;
+            const z = func(x, y);
+            target.set(x, y, z);
+        },
+        64, 64
+    );
+    
+    const material = new THREE.MeshPhongMaterial({
+        color: 0x6366f1,
+        side: THREE.DoubleSide,
+        wireframe: false
+    });
+    
+    return new THREE.Mesh(geometry, material);
+}
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Links</h3>
+                <div class="links">
+                    <a href="#" class="link-button">
+                        <span>GitHub Repository</span>
+                    </a>
+                    <a href="#" class="link-button">
+                        <span>Live Visualizations</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Resources</h3>
+                <ul class="resource-list">
+                    <li><a href="#">3Blue1Brown - Essence of Calculus</a></li>
+                    <li><a href="#">Three.js Documentation</a></li>
+                    <li><a href="#">Mathematical Visualization Best Practices</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Husky Satellite Labs -->
+    <div id="husky-sat-page" class="project-page container">
+        <a href="#" class="back-button" onclick="showMain(); return false;">← Back to Portfolio</a>
+        
+        <div class="project-header">
+            <h2>Husky Satellite Labs Earth Tracker FOUND</h2>
+            <p class="project-date">December 2024</p>
+        </div>
+
+        <div class="project-content">
+            <div class="section">
+                <h3>About</h3>
+                <p>Developed the Serializer/Deserializer code from scratch for the Husky SAT FOUND subsystem, enabling efficient data transmission between the satellite and ground stations.</p>
+            </div>
+
+            <div class="section">
+                <h3>Code Preview</h3>
+                <div class="code-preview">
+// Custom serialization for satellite telemetry data
+typedef struct {
+    uint32_t timestamp;
+    float temperature;
+    float voltage;
+    uint8_t status_flags;
+} TelemetryPacket;
+
+void serialize_telemetry(TelemetryPacket* packet, uint8_t* buffer) {
+    // Serialize with endianness consideration
+    buffer[0] = (packet->timestamp >> 24) & 0xFF;
+    buffer[1] = (packet->timestamp >> 16) & 0xFF;
+    buffer[2] = (packet->timestamp >> 8) & 0xFF;
+    buffer[3] = packet->timestamp & 0xFF;
+    
+    // Float to bytes conversion
+    memcpy(&buffer[4], &packet->temperature, sizeof(float));
+    memcpy(&buffer[8], &packet->voltage, sizeof(float));
+    
+    buffer[12] = packet->status_flags;
+}
+
+TelemetryPacket deserialize_telemetry(uint8_t* buffer) {
+    TelemetryPacket packet;
+    
+    // Reconstruct timestamp
+    packet.timestamp = ((uint32_t)buffer[0] << 24) |
+                      ((uint32_t)buffer[1] << 16) |
+                      ((uint32_t)buffer[2] << 8) |
+                      (uint32_t)buffer[3];
+    
+    // Extract floats
+    memcpy(&packet.temperature, &buffer[4], sizeof(float));
+    memcpy(&packet.voltage, &buffer[8], sizeof(float));
+    
+    packet.status_flags = buffer[12];
+    
+    return packet;
+}
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Links</h3>
+                <div class="links">
+                    <a href="#" class="link-button">
+                        <span>GitHub Repository</span>
+                    </a>
+                    <a href="#" class="link-button">
+                        <span>Husky Sat Lab</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Resources</h3>
+                <ul class="resource-list">
+                    <li><a href="#">CubeSat Communication Protocols</a></li>
+                    <li><a href="#">Embedded Systems Serialization Best Practices</a></li>
+                    <li><a href="#">NASA Small Spacecraft Technology</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ClubAI/BuzzeAI -->
+    <div id="clubai-page" class="project-page container">
+        <a href="#" class="back-button" onclick="showMain(); return false;">← Back to Portfolio</a>
+        
+        <div class="project-header">
+            <h2>ClubAI/BuzzeAI</h2>
+            <p class="project-date">October 2024</p>
+        </div>
+
+        <div class="project-content">
+            <div class="section">
+                <h3>About</h3>
+                <p>An AI-powered platform designed for custom poster generation to help small businesses and school clubs create professional advertising materials quickly and affordably.</p>
+            </div>
+
+            <div class="section">
+                <h3>Code Preview</h3>
+                <div class="code-preview">
+# AI Poster Generation Pipeline
+import torch
+from diffusers import StableDiffusionPipeline
+from PIL import Image
+
+class PosterGenerator:
+    def __init__(self):
+        self.pipe = StableDiffusionPipeline.from_pretrained(
+            "stabilityai/stable-diffusion-2-1",
+            torch_dtype=torch.float16
+        )
+        self.pipe = self.pipe.to("cuda")
+    
+    def generate_poster(self, prompt, style="modern", dimensions=(1080, 1920)):
+        # Enhance prompt with style keywords
+        enhanced_prompt = f"{style} poster design, {prompt}, professional, high quality"
+        
+        # Generate image
+        image = self.pipe(
+            enhanced_prompt,
+            height=dimensions[1],
+            width=dimensions[0],
+            guidance_scale=7.5,
+            num_inference_steps=50
+        ).images[0]
+        
+        return self.post_process(image)
+    
+    def post_process(self, image):
+        # Add text overlay, adjust colors, etc.
+        pass
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Links</h3>
+                <div class="links">
+                    <a href="#" class="link-button">
+                        <span>GitHub Repository</span>
+                    </a>
+                    <a href="#" class="link-button">
+                        <span>Demo</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Resources</h3>
+                <ul class="resource-list">
+                    <li><a href="#">Stable Diffusion Documentation</a></li>
+                    <li><a href="#">Design Principles for AI-Generated Content</a></li>
+                    <li><a href="#">Marketing Design Best Practices</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Eye Disease Detection -->
+    <div id="eye-disease-page" class="project-page container">
+        <a href="#" class="back-button" onclick="showMain(); return false;">← Back to Portfolio</a>
+        
+        <div class="project-header">
+            <h2>Eye Disease Detection</h2>
+            <p class="project-date">November 2023</p>
+        </div>
+
+        <div class="project-content">
+            <div class="section">
+                <h3>About</h3>
+                <p>Developed a custom Convolutional Neural Network in collaboration with Ankara City Hospital. Through working directly with doctors, I learned to read and understand eye scans, enabling the creation of a model that can detect CNV (Choroidal Neovascularization), Drusen, DME (Diabetic Macular Edema), and identify healthy eyes.</p>
+            </div>
+
+            <div class="section">
+                <h3>Code Preview</h3>
+                <div class="code-preview">
+import tensorflow as tf
+from tensorflow.keras import layers, models
+
+def create_eye_disease_cnn():
+    model = models.Sequential([
+        # Input layer
+        layers.Input(shape=(224, 224, 3)),
+        
+        # Convolutional blocks
+        layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
+        layers.BatchNormalization(),
+        layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
+        layers.MaxPooling2D((2, 2)),
+        layers.Dropout(0.25),
+        
+        layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
+        layers.BatchNormalization(),
+        layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
+        layers.MaxPooling2D((2, 2)),
+        layers.Dropout(0.25),
+        
+        layers.Conv2D(128, (3, 3), activation='relu', padding='same'),
+        layers.BatchNormalization(),
+        layers.Conv2D(128, (3, 3), activation='relu', padding='same'),
+        layers.MaxPooling2D((2, 2)),
+        layers.Dropout(0.25),
+        
+        # Dense layers
+        layers.Flatten(),
+        layers.Dense(512, activation='relu'),
+        layers.BatchNormalization(),
+        layers.Dropout(0.5),
+        layers.Dense(4, activation='softmax')  # 4 classes: CNV, Drusen, DME, Healthy
+    ])
+    
+    model.compile(
+        optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
+        loss='categorical_crossentropy',
+        metrics=['accuracy', tf.keras.metrics.AUC()]
+    )
+    
+    return model
+
+# Data augmentation for medical images
+data_augmentation = tf.keras.Sequential([
+    layers.RandomRotation(0.1),
+    layers.RandomZoom(0.1),
+    layers.RandomContrast(0.1),
+])
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Links</h3>
+                <div class="links">
+                    <a href="#" class="link-button">
+                        <span>GitHub Repository</span>
+                    </a>
+                    <a href="#" class="link-button">
+                        <span>Research Paper</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Resources</h3>
+                <ul class="resource-list">
+                    <li><a href="#">OCT Image Analysis - Medical Journal</a></li>
+                    <li><a href="#">Deep Learning in Ophthalmology - Review Paper</a></li>
+                    <li><a href="#">TensorFlow Medical Imaging Tutorial</a></li>
+                    <li><a href="#">Retinal Disease Classification Dataset</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functions
+        function showProject(projectId) {
+            // Hide main page
+            document.getElementById('main-page').style.display = 'none';
+            
+            // Hide all project pages
+            const projectPages = document.querySelectorAll('.project-page');
+            projectPages.forEach(page => page.style.display = 'none');
+            
+            // Show selected project page
+            document.getElementById(projectId + '-page').style.display = 'block';
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function showMain() {
+            // Hide all project pages
+            const projectPages = document.querySelectorAll('.project-page');
+            projectPages.forEach(page => page.style.display = 'none');
+            
+            // Show main page
+            document.getElementById('main-page').style.display = 'block';
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease-out';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all project cards
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.project-card');
+            cards.forEach(card => observer.observe(card));
+        });
+    </script>
+</body>
+</html>
